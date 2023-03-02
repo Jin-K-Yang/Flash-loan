@@ -18,6 +18,16 @@ contract FlashLoan is FlashLoanSimpleReceiverBase {
     }
 
     function executeOperation(address asset, uint256 amount, uint256 premium, address initiator, bytes calldata params) external override returns (bool) {
+        // You need to send fund to this contract in order to repay the flash loan amount + premium because there is no arbitrageur stratagy in this example
+        // Arbitrageur stratagy logic goes here
+
+        // At the end of your logic above, this contract owes the flashloaned amount + premiums.
+        // Therefore ensure your contract has enough to repay these amounts.
+
+        // Approve the Pool contract allowance to *pull* the owed amount
+        uint256 amountOwed = amount + premium;
+        IERC20(asset).approve(address(POOL), amountOwed);
+
         return true;
     }
 
